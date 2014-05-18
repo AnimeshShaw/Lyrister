@@ -2,7 +2,6 @@
 import requests
 import sys
 import os
-from bs4 import BeautifulSoup
 
 __author__ = "Psycho_Coder <psychocoder@outlook.com>"
 __date__ = "May 14, 2014"
@@ -100,6 +99,11 @@ def Usage():
 
 
 if __name__ == "__main__":
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        print("To execute this app. You need BeautifulBoup4 library. Please Read Helpdocs on how to install the "
+              "library")
     if len(sys.argv) == 1:
         printHeaders()
         song, dir, filename = getDetails()
