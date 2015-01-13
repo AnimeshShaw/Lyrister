@@ -19,7 +19,7 @@ Title = '''
 Description = '''
 Enter the Song name for which you want to get the lyrics and press return.
 Lyrics will be printed to stdout.
-Minor tweaks by d4rkcat.
+Minor tweaks by github.com/d4rkcat.
 '''
 
 
@@ -59,13 +59,18 @@ if __name__ == "__main__":
 	try:
 		from bs4 import BeautifulSoup
 	except ImportError:
-		print("To execute this app. You need BeautifulBoup4 library. Please Read Helpdocs on how to install the "
+		print("To execute this app. You need BeautifulSoup4 library. Please Read Helpdocs on how to install the "
 			  "library")
 		exit(0)
 
-	parser = ArgumentParser(prog='lyrister', usage='./lyrister.py [options] (-h for help)')
-	parser.add_argument('-s', "--song", type=str, help='Song name to search lyrics for.', required = True)
-	args = parser.parse_args()
+	if not sys.stdin.isatty():
+		for line in sys.stdin:
+			lyrister = Lyrister(line)
+			lyrister.processRequest()
+	else:
+		parser = ArgumentParser(prog='lyrister', usage='./lyrister.py [options] (-h for help)')
+		parser.add_argument('-s', "--song", type=str, help='Song name to search lyrics for.', required = True)
+		args = parser.parse_args()
 
-	lyrister = Lyrister(args.song)
-	lyrister.processRequest()
+		lyrister = Lyrister(args.song)
+		lyrister.processRequest()
