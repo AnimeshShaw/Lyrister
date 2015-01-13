@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import requests, sys, os
+import requests, sys, os, re
 from argparse import ArgumentParser
 
 __author__ = "Psycho_Coder <psychocoder@outlook.com>"
@@ -49,8 +49,8 @@ class Lyrister:
 
 			soup = BeautifulSoup(encodedQuery)
 			lyrics = soup.findAll('div', {'style': 'margin-left:10px;margin-right:10px;'})
-
-			print(lyrics[0])
+			striphtml = re.sub("<.*?>", "", str(lyrics[0]))
+			print(striphtml + '<!-- end of lyrics -->')
 		else:
 			print('Sorry we couldn\'t get the lyrics of the requested song!')
 
