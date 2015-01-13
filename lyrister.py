@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import requests, sys, os, re
+import requests, sys, os, re, urllib
 from argparse import ArgumentParser
 
 __author__ = "Psycho_Coder <psychocoder@outlook.com>"
@@ -28,7 +28,7 @@ class Lyrister:
 		self.song = str(song)
 
 	def processRequest(self):
-		req = requests.get("http://www.google.com/search?q=" + self.song.replace(' ', '+') + '+lyrics')
+		req = requests.get("https://www.google.com/search?q=" + urllib.quote_plus(self.song) + '+lyrics')
 		encodedQuery = req.text.encode('ascii', 'ignore')
 		req.close()
 
@@ -50,7 +50,7 @@ class Lyrister:
 			soup = BeautifulSoup(encodedQuery)
 			lyrics = soup.findAll('div', {'style': 'margin-left:10px;margin-right:10px;'})
 			striphtml = re.sub("<.*?>", "", str(lyrics[0]))
-			print(striphtml + '<!-- end of lyrics -->')
+			print('<!-- lyrics for %s -->' % (self.song.strip()) + striphtml + '<!-- end of lyrics -->')
 		else:
 			print('Sorry we couldn\'t get the lyrics of the requested song!')
 
