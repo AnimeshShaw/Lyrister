@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import requests, sys, os
+import requests, sys, os, re, urllib
 from argparse import ArgumentParser
 
 __author__ = "Psycho_Coder <psychocoder@outlook.com>"
@@ -19,7 +19,7 @@ Title = '''
 Description = '''
 Enter the Song name for which you want to get the lyrics and press return.
 Lyrics will be printed to stdout.
-Minor tweaks by d4rkcat.
+Minor tweaks by github.com/d4rkcat.
 '''
 
 
@@ -28,7 +28,7 @@ class Lyrister:
 		self.song = str(song)
 
 	def processRequest(self):
-		req = requests.get("http://www.google.com/search?q=" + self.song.replace(' ', '+') + '+lyrics')
+		req = requests.get("https://www.google.com/search?q=" + urllib.quote_plus(self.song) + '+lyrics')
 		encodedQuery = req.text.encode('ascii', 'ignore')
 		req.close()
 
@@ -49,8 +49,8 @@ class Lyrister:
 
 			soup = BeautifulSoup(encodedQuery)
 			lyrics = soup.findAll('div', {'style': 'margin-left:10px;margin-right:10px;'})
-
-			print(lyrics[0])
+			striphtml = re.sub("<.*?>", "", str(lyrics[0]))
+			print('<!-- lyrics for %s -->' % (self.song.strip()) + striphtml + '<!-- end of lyrics -->')
 		else:
 			print('Sorry we couldn\'t get the lyrics of the requested song!')
 
@@ -59,13 +59,19 @@ if __name__ == "__main__":
 	try:
 		from bs4 import BeautifulSoup
 	except ImportError:
-		print("To execute this app. You need BeautifulBoup4 library. Please Read Helpdocs on how to install the "
+		print("To execute this app. You need BeautifulSoup4 library. Please Read Helpdocs on how to install the "
 			  "library")
 		exit(0)
 
-	parser = ArgumentParser(prog='lyrister', usage='./lyrister.py [options] (-h for help)')
-	parser.add_argument('-s', "--song", type=str, help='Song name to search lyrics for.', required = True)
-	args = parser.parse_args()
+	if not sys.stdin.isatty():
+		for line in sys.stdin:
+			lyrister = Lyrister(line)
+			lyrister.processRequest()
+	else:
+		parser = ArgumentParser(prog='lyrister', usage='./lyrister.py [options] (-h for help)')
+		parser.add_argument('-s', "--song", type=str, help='Song name to search lyrics for.', required = True)
+		args = parser.parse_args()
 
-	lyrister = Lyrister(args.song)
-	lyrister.processRequest()
+		lyrister = Lyrister(args.song)
+		lyrister.processRequest()
+
