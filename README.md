@@ -3,9 +3,9 @@ Lyrister
 
 Song Lyrics scrapper in python using requests module.
 
-To use this Application you need to have the BeautifulSoup4 python package.
+This little script depends on some 3rd party libraries which you can install using pip and the requirements.txt file provided.
 
-`sudo pip install requests`
+`sudo pip install -r requirements.txt`
 
 ### For further Instructions on usage [Click Here] (http://www.rawcoders.com/Thread-Python-Lyrister-Song-Lyrics-Scrapper)
 
